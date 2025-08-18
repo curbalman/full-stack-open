@@ -51,7 +51,18 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     if(persons.map(person => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      const prompt = `${newName} is already added to phonebook, replace the old number with a new one?`
+      if (window.confirm(prompt)) {
+        const person = persons.find(p => p.name === newName)
+        const changedPerson = {...person, number: newNumber}
+        personService
+          .update(person.id, changedPerson)
+          .then( returnedPerson => {
+            setPersons(persons.map( (p) => 
+              p.id === person.id ? returnedPerson : p
+            ))
+          })
+      }
     } else {
       const personObject = {
         name: newName,
@@ -62,6 +73,8 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('a new name...')
         setNewNumber('')
+      }).catch( error => {
+        console.error('Error adding person:', error)
       })
     }
   }
@@ -82,7 +95,6 @@ const App = () => {
         setPersons(persons.filter(n => n.id !== person.id))
       }).catch(error => {
         console.error('Error deleting person:', error)
-        // 可以在这里添加错误处理，比如显示错误通知
       })
     }
   }
