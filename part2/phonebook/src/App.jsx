@@ -2,17 +2,26 @@ import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
 
-const Persons = ({persons}) => {
+const Persons = ({persons, handleDeleteClick}) => {
   return (
     <>
       {persons.map( person =>
-          <PersonLine key={person.name} person={person} />
+        <PersonLine
+          key={person.name}
+          person={person}
+          handleDeleteClick={() => handleDeleteClick(person)}
+        />
       )}
     </>
   )
 }
 
-const PersonLine = ({person}) => <p>{person.name} {person.number}</p>
+const PersonLine = ({person, handleDeleteClick}) => (
+  <li>
+    {person.name} {person.number}
+    <button onClick={handleDeleteClick}>delete</button>
+  </li>
+)
 
 const PersonForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
   return (
@@ -67,6 +76,17 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleDeleteClick = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.deleteID(person.id).then(() => {
+        setPersons(persons.filter(n => n.id !== person.id))
+      }).catch(error => {
+        console.error('Error deleting person:', error)
+        // 可以在这里添加错误处理，比如显示错误通知
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -75,7 +95,7 @@ const App = () => {
                   handleNameChange={handleNameChange} newNumber={newNumber} 
                   handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} />
+      <Persons persons={persons} handleDeleteClick={handleDeleteClick}/>
     </div>
   )
 }
