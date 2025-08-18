@@ -1,14 +1,29 @@
 import { useState } from 'react'
 
-const Numbers = ({persons}) => {
+const Persons = ({persons}) => {
   return (
     <>
-      <h2>Numbers</h2>
       {persons.map( person =>
-        <p key={person.name}>{person.name} {person.number}</p>
-      ) }
+          <PersonLine key={person.name} person={person} />
+      )}
     </>
+  )
+}
 
+const PersonLine = ({person}) => <p>{person.name} {person.number}</p>
+
+const PersonForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
+
+  return (
+    <form onSubmit={addPerson}>
+      <div>
+        name: <input value={newName} onChange={handleNameChange}/>
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={handleNumberChange}/>
+      </div>
+      <div><button type="submit">add</button></div>
+    </form>
   )
 }
 
@@ -46,17 +61,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div><button type="submit">add</button></div>
-      </form>
-      
-      <Numbers persons={persons} />
+      <h3>Add a new</h3>
+      <PersonForm addPerson={addPerson} newName={newName} 
+                  handleNameChange={handleNameChange} newNumber={newNumber} 
+                  handleNumberChange={handleNumberChange} />
+      <h3>Numbers</h3>
+      <Persons persons={persons} />
     </div>
   )
 }
