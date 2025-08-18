@@ -1,10 +1,19 @@
 const Header = ({name}) => <h1>{name}</h1>
 
-const Content = ({parts}) => (
-  <div>
-    { parts.map((part, i) => <Part part={part} key={i} />) }
-  </div>
-)
+const Content = ({parts}) => {
+  let nexercise = 0
+  return (
+    <div>
+      { parts.map( (part, i) => {
+          nexercise += part.exercises
+          return ( <Part part={part} key={i} />)
+        } )
+      }
+      <p>total of {nexercise} exercises</p>
+    </div>
+  )
+}
+
 
 const Part = ({part}) => (
   <p>
@@ -41,6 +50,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4        
       }
     ]
   }
