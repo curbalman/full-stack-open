@@ -23,6 +23,13 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
+app.get('/info', (request, response) => {
+    const now = new Date();
+    response.send(`<p>Phonebook has info for ${notes.length} people</p>` +
+                  `<p>${now.toString()}</p>`
+    )
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(notes)
 })
