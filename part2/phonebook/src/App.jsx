@@ -37,10 +37,23 @@ const PersonForm = ({addPerson, newName, handleNameChange, newNumber, handleNumb
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('a new name...')
   const [newNumber, setNewNumber] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -61,6 +74,8 @@ const App = () => {
             setPersons(persons.map( (p) => 
               p.id === person.id ? returnedPerson : p
             ))
+            setErrorMessage(`Changed number of ${newName}`)
+            setTimeout(()=>setErrorMessage(null), 5000)
           })
       }
     } else {
@@ -73,6 +88,8 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('a new name...')
         setNewNumber('')
+        setErrorMessage(`Added ${newName}`)
+        setTimeout(()=>setErrorMessage(null), 5000)
       }).catch( error => {
         console.error('Error adding person:', error)
       })
@@ -102,6 +119,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <h3>Add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} 
                   handleNameChange={handleNameChange} newNumber={newNumber} 
