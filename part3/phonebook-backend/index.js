@@ -51,6 +51,12 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
+  if (persons.map(p => p.name).includes(person.name)) {
+    return response.status(400).json({ 
+      error: 'name must be unique' 
+    })
+  }
+
   person.id = String(Math.floor(Math.random() * 1000000) + 1)
   persons = persons.concat(person)
 
