@@ -50,6 +50,23 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(p => {
+      if(!p) {
+        return response.status(404).end()
+      }
+
+      p.name = request.body.name
+      p.number = request.body.number
+
+      return p.save().then( updatedPerson => {
+        response.json(updatedPerson)
+      })
+    })
+    .catch(error => next(error))
+})
+
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
@@ -63,10 +80,9 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(p => p.id !== id)
-
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => response.status(204).end())
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
