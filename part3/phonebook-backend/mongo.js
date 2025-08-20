@@ -11,12 +11,13 @@ const url = `mongodb+srv://fullstack:${password}@cluster0.jglvyzx.mongodb.net/ph
 
 mongoose.set('strictQuery',false)
 
-mongoose.connect(url).then(res=>{
-    console.log('Database connected');
-},err=>{
-    console.log('Connection failed',err);
-})
-
+mongoose.connect(url)
+  .then(result => {
+    console.log('connected to MongoDB')
+  })
+  .catch(error => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -25,12 +26,27 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema)
 
-const person = new Person({
-    name: "Arto Hellas", 
-    number: "040-123456",
-})
+if( process.argv.length == 3 ) {
+    Person.find({}).then(result => {
+        result.forEach(p => {
+            console.log(p)
+        })
+        mongoose.connection.close()
+    })
+} else {
+    const person = new Person({
+        name: process.argv[3], 
+        number: process.argv[4],
+    })
 
-person.save().then(result => {
-  console.log('person saved!')
-  mongoose.connection.close()
-})
+    person.save().then(result => {
+        console.log(`Saved ${person.name}!\n`, person)
+        mongoose.connection.close()
+    })
+}
+
+
+
+
+
+
