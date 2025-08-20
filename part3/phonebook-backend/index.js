@@ -1,6 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
-const mongoose = require('mongoose')
+const Person = require('./models/person')
 
 const app = express()
 
@@ -12,35 +13,6 @@ if (process.argv.length < 3) {
   console.log('give password as argument')
   process.exit(1)
 }
-
-const password = process.argv[2]
-
-const url = `mongodb+srv://fullstack:${password}@cluster0.jglvyzx.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`
-
-mongoose.set('strictQuery',false)
-
-mongoose.connect(url)
-  .then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch(error => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-})
-
-personSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-const Person = mongoose.model('Person', personSchema)
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -102,7 +74,7 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
