@@ -14,7 +14,7 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  const now = new Date();
+  const now = new Date()
   Person.find({}).then(result => {
     response.send(`<p>Phonebook has info for ${result.length} people</p>` +
                   `<p>${now.toString()}</p>`
@@ -23,7 +23,7 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  console.log("Get all persons...")
+  console.log('Get all persons...')
   Person.find({}).then(result => {
     response.json(result)
   })
@@ -40,13 +40,13 @@ app.post('/api/persons', (request, response) => {
   }
 
   const person = new Person({
-      name: body.name, 
-      number: body.number,
+    name: body.name, 
+    number: body.number,
   })
 
   person.save().then(result => {
-      console.log(`Saved ${result.name}!\n`, result)
-      response.json(result)
+    console.log(`Saved ${result.name}!\n`, result)
+    response.json(result)
   })
 })
 
@@ -79,9 +79,9 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => response.status(204).end())
+    .then(() => response.status(204).end())
     .catch(error => next(error))
 })
 
