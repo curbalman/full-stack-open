@@ -9,11 +9,6 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan('tiny'))
 
-if (process.argv.length < 3) {
-  console.log('give password as argument')
-  process.exit(1)
-}
-
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
