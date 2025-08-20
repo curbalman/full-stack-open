@@ -1,4 +1,4 @@
-POST http://localhost:3001/api/persons
+POST https://full-stack-open-qf1l.onrender.com/api/persons
 Content-Type: application/json
 
 { 
@@ -8,5 +8,5 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/api/persons
+GET https://full-stack-open-qf1l.onrender.com/api/persons
     

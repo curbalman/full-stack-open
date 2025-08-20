@@ -14,52 +14,46 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    const now = new Date();
-    response.send(`<p>Phonebook has info for ${persons.length} people</p>` +
+  const now = new Date();
+  Person.find({}).then(result => {
+    response.send(`<p>Phonebook has info for ${result.length} people</p>` +
                   `<p>${now.toString()}</p>`
     )
+  })
 })
 
 app.get('/api/persons', (request, response) => {
   console.log("Get all persons...")
   Person.find({}).then(result => {
     response.json(result)
-    // mongoose.connection.close()
   })
 })
 
 app.post('/api/persons', (request, response) => {
   console.log(request.headers)
   console.log(request.body)
-  const person = request.body
-  if (!(person.name && person.number)) {
+  const body = request.body
+  if (!(body.name && body.number)) {
     return response.status(400).json({ 
       error: 'name or number missing' 
     })
   }
 
-  if (persons.map(p => p.name).includes(person.name)) {
-    return response.status(400).json({ 
-      error: 'name must be unique' 
-    })
-  }
+  const person = new Person({
+      name: body.name, 
+      number: body.number,
+  })
 
-  person.id = String(Math.floor(Math.random() * 1000000) + 1)
-  persons = persons.concat(person)
-
-  response.json(person)
+  person.save().then(result => {
+      console.log(`Saved ${result.name}!\n`, result)
+      response.json(result)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(p => p.id === id)
-  
-
-  if (person) {
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
